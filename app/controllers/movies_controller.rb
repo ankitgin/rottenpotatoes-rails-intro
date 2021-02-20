@@ -18,6 +18,19 @@ class MoviesController < ApplicationController
       @movies = Movie.all
     end
     
+    @selected_column = params["sort_column"]
+    
+    
+    if params[:sort_column] !=nil
+      @movies = Movie.sorted(@selected_column)
+    end
+    
+    if(params[:ratings] != nil && params[:sort_column] !=nil)
+      @ratings_to_show = params[:ratings].keys()
+      @movies = Movie.sortedandrated(@ratings_to_show, @selected_column)
+      #debugger
+    end
+    
   end
 
   def new
