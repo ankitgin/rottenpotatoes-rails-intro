@@ -7,29 +7,28 @@ class MoviesController < ApplicationController
   end
 
   def index
+    
     @all_ratings = Movie.all_ratings
-    
     @ratings_to_show = []
-    if params[:ratings] != nil
+    @selected_column = session[:sort_column]
+    
+
+    if params[:ratings].present?
+      session[:ratings] = params[:ratings]
+      @ratings_to_show = session[:ratings].keys()
+    end
       
-      @ratings_to_show = params[:ratings].keys()
-      @movies = Movie.with_ratings(@ratings_to_show)
-    else
-      @movies = Movie.all
+      
+    if params[:sort_column].present?
+      session[:sort_column] = params[:sort_column]
+      @selected_column = session[:sort_column]
     end
-    
-    @selected_column = params["sort_column"]
-    
-    
-    if params[:sort_column] !=nil
-      @movies = Movie.sorted(@selected_column)
+
+    if (params[:ratings] ==nil && params[:sort_column] ==nil) && session[:ratings] !=nil
+      @ratings_to_show = session[:ratings].keys()
     end
-    
-    if(params[:ratings] != nil && params[:sort_column] !=nil)
-      @ratings_to_show = params[:ratings].keys()
-      @movies = Movie.sortedandrated(@ratings_to_show, @selected_column)
-      #debugger
-    end
+      
+    @movies = Movie.sorted_and_rated(@ratings_to_show, @selected_column)
     
   end
 
