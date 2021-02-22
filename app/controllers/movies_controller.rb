@@ -26,15 +26,11 @@ class MoviesController < ApplicationController
       @ratings_to_show = []
     end
       
-      
+  
     if params[:sort_column].present?
       session[:sort_column] = params[:sort_column]
       @selected_column = session[:sort_column]
     end
-
-    # if (params[:ratings] ==nil && params[:sort_column] ==nil) && session[:ratings] !=nil
-    #   @ratings_to_show = session[:ratings].keys()
-    # end
     
     if params[:home] == nil && session[:ratings] !=nil
       @ratings_to_show = session[:ratings].keys()
