@@ -7,6 +7,11 @@ class MoviesController < ApplicationController
   end
 
   def index
+    #debugger
+    
+    if request.fullpath == "/"
+      reset_session
+    end
     
     @all_ratings = Movie.all_ratings
     @ratings_to_show = []
@@ -16,6 +21,9 @@ class MoviesController < ApplicationController
     if params[:ratings].present?
       session[:ratings] = params[:ratings]
       @ratings_to_show = session[:ratings].keys()
+    elsif params[:home].present?
+      session[:ratings] = nil
+      @ratings_to_show = []
     end
       
       
@@ -24,13 +32,21 @@ class MoviesController < ApplicationController
       @selected_column = session[:sort_column]
     end
 
-    if (params[:ratings] ==nil && params[:sort_column] ==nil) && session[:ratings] !=nil
+    # if (params[:ratings] ==nil && params[:sort_column] ==nil) && session[:ratings] !=nil
+    #   @ratings_to_show = session[:ratings].keys()
+    # end
+    
+    if params[:home] == nil && session[:ratings] !=nil
       @ratings_to_show = session[:ratings].keys()
+      @selected_column = session[:sort_column]
     end
+      
       
     @movies = Movie.sorted_and_rated(@ratings_to_show, @selected_column)
     
   end
+
+
 
   def new
     # default: render 'new' template
